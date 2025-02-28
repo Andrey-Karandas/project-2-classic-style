@@ -931,9 +931,13 @@ module.exports = g;
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_modals__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modules/modals */ "./src/js/modules/modals.js");
+/* harmony import */ var _modules_slider__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/slider */ "./src/js/modules/slider.js");
+
 
 window.addEventListener('DOMContentLoaded', function () {
   Object(_modules_modals__WEBPACK_IMPORTED_MODULE_0__["default"])();
+  Object(_modules_slider__WEBPACK_IMPORTED_MODULE_1__["default"])('.main-slider-item', 1, 1, 'vertical', true, 3000);
+  Object(_modules_slider__WEBPACK_IMPORTED_MODULE_1__["default"])('.feedback-slider-item', 2, 1, 'horizontal', true, 3000, '.main-prev-btn', '.main-next-btn');
 });
 
 /***/ }),
@@ -1022,11 +1026,111 @@ var modals = function modals() {
   });
   bindModal('.button-design', '.popup-design', '.popup-design .popup-close');
   bindModal('.button-consultation', '.popup-consultation', '.popup-consultation .popup-close');
-  bindModal('.fixed-gift', '.popup-gift', '.popup-gift .popup-close', true);
-  showModalByTime('.popup-consultation', 60000);
+  bindModal('.fixed-gift', '.popup-gift', '.popup-gift .popup-close', true); // showModalByTime('.popup-consultation', 60000)
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (modals);
+
+/***/ }),
+
+/***/ "./src/js/modules/slider.js":
+/*!**********************************!*\
+  !*** ./src/js/modules/slider.js ***!
+  \**********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom-collections.for-each */ "./node_modules/core-js/modules/web.dom-collections.for-each.js");
+/* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var sliders = function sliders(slides, start, step, dir) {
+  var auto = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+  var time = arguments.length > 5 ? arguments[5] : undefined;
+  var prev = arguments.length > 6 ? arguments[6] : undefined;
+  var next = arguments.length > 7 ? arguments[7] : undefined;
+  var slideIndex = start;
+  var paused;
+  var items = document.querySelectorAll(slides);
+
+  function showSlides(n) {
+    if (n > items.length) {
+      slideIndex = 1;
+    }
+
+    if (n < 1) {
+      slideIndex = items.length;
+    }
+
+    items.forEach(function (item) {
+      item.classList.add('animated');
+      item.style.display = 'none';
+    });
+    items[slideIndex - 1].style.display = 'block';
+  }
+
+  showSlides(slideIndex);
+
+  function changeSlides(n) {
+    showSlides(slideIndex += n);
+  }
+
+  try {
+    var prevBtn = document.querySelector(prev);
+    var nextBtn = document.querySelector(next);
+    prevBtn.addEventListener('click', function () {
+      changeSlides(-step);
+
+      if (dir === 'vertical') {
+        items[slideIndex - 1].classList.remove('slideInDown');
+        items[slideIndex - 1].classList.add('slideInUp');
+      } else {
+        items[slideIndex - 1].classList.remove('slideInLeft');
+        items[slideIndex - 1].classList.add('slideInRight');
+      }
+    });
+    nextBtn.addEventListener('click', function () {
+      changeSlides(step);
+
+      if (dir === 'vertical') {
+        items[slideIndex - 1].classList.remove('slideInUp');
+        items[slideIndex - 1].classList.add('slideInDown');
+      } else {
+        items[slideIndex - 1].classList.remove('slideInRight');
+        items[slideIndex - 1].classList.add('slideInLeft');
+      }
+    });
+  } catch (e) {}
+
+  function activationAnimation() {
+    if (auto) {
+      if (dir === 'vertical') {
+        paused = setInterval(function () {
+          changeSlides(step);
+          items[slideIndex - 1].classList.add('slideInDown');
+        }, time);
+      } else {
+        paused = setInterval(function () {
+          changeSlides(step);
+          items[slideIndex - 1].classList.remove('slideInRight');
+          items[slideIndex - 1].classList.add('slideInLeft');
+        }, time);
+      }
+    }
+  }
+
+  activationAnimation();
+  items[0].parentNode.addEventListener('mouseenter', function () {
+    clearInterval(paused);
+  });
+  items[0].parentNode.addEventListener('mouseleave', function () {
+    activationAnimation();
+  });
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (sliders);
 
 /***/ })
 
