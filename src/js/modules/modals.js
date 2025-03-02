@@ -32,7 +32,6 @@ const modals = () => {
       document.body.style.overflow = ''
       document.body.style.marginRight = `0px`
       modal.removeAttribute('data-active')
-      console.log(parseInt(currentPositionGift));
       gift.style.right = `${parseInt(currentPositionGift) / 10}rem`
     })
 
